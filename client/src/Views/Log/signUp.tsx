@@ -1,31 +1,35 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import React, { useReducer } from "react";
+import React, { Reducer, useReducer } from "react";
 
 interface State{
     email:string;
     password:string;
 }
-interface Action{
-    type: 'update';
-    payload: {
-      key: string;
-      value: string;
-    };
+type Action = {
+    type: 'USER_EMAIL' | 'USER_PASSWORD';
+    payload: string;
 }
-
-const reducer= (state:State,action:Action):any=>{
+const reducer= (state:State,action:Action):{email:string, password:string}=>{
     switch(action.type){
-
+        case 'USER_EMAIL':
+            return {...state, email:action.payload}
+        case 'USER_PASSWORD':
+            return {...state, password:action.payload}
+        default:
+            throw new Error();
     }
 }
 
 const SignUp:React.FC = () => {
 
-    const [state, dispatch] = useReducer(reducer,{
+    const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer,{
         email:'',
         password:'',
     });
+const handleSubmit = (event:React.MouseEvent<HTMLButtonElement>)=>{
+    event.preventDefault();
+}
     return ( 
         <>
         <Grid container sx={{justifyContent:'center',flexDirection:'column',display:'flex'}}>
@@ -34,24 +38,27 @@ const SignUp:React.FC = () => {
             </Grid>
             <Grid item sx={{display:'flex',alignItems:'center', flexDirection:'column'}}>
                     <TextField 
-                    variant="outlined"
+                    variant="outlined" required
                     color="primary"
                     label='Email'
                     type='email'
-                    name="email"
                     value={state.email}
+                    onChange={(event)=>dispatch({type:'USER_EMAIL',payload:event.target.value})}
                     sx={{marginTop:3,width:'300px'}}
                     />
                     <TextField 
-                    variant="outlined"
+                    variant="outlined" required
                     color="primary"
                     label='Password'
                     type='password'
-                    name="password"
                     value={state.password}
+                    onChange={(event)=>dispatch({type:'USER_PASSWORD',payload:event.target.value})}
                     sx={{marginTop:3,width:'300px'}}
                     />
-                    <Button color='primary' variant="contained" sx={{fontFamily:'mononspace',marginTop:2}}>SUBMIT</Button>
+                    <Button color='primary' 
+                    variant="contained" 
+                    onClick={handleSubmit}
+                    sx={{fontFamily:'monospace',marginTop:2}}>SUBMIT</Button>
                     <Typography>Aready have an account? <Link to='/login'>Login</Link></Typography>
             </Grid>
         </Grid>
