@@ -1,23 +1,26 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const bycrpt = require('bcryptjs');
 require('dotenv').config();
-const cookieParser = require('cookie-parser');
+const {
+    notFound,
+    errorHandler,
+} = require('./Middlewares/errors.middleware');
 
 
-//inintializing the app;
+//initializing the app;
 const app = express();
 
 //middlewares;
 app.use(cors());
 app.use(bodyParser.json());
-app.use(cookieParser());
+//app.use(notFound);
+//app.use(errorHandler);
 
 //importing routes;
 const {
     router,
-} = require('./Routes/get.route');
+} = require('./Routes/auth.route');
 
 //importing databases;
 const {
@@ -25,14 +28,14 @@ const {
 } = require('./Databases/mongo');
 
 //application routes;
-app.use('/auth',router);
+app.use('/auth', router);
 
 //initializing server;
-app.listen(process.env.PORT,(error)=>{
-    if(!error){
+app.listen(process.env.PORT, (error) => {
+    if (!error) {
         database();
         console.log(process.env.PORT);
-    }else{
+    } else {
         console.log(error.message);
     }
 });
