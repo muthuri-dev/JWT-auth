@@ -29,6 +29,7 @@ const SignUp:React.FC = () => {
     });
 const handleSubmit = (event:React.MouseEvent<HTMLButtonElement>)=>{
     event.preventDefault();
+    console.log(state);
 }
     return ( 
         <>
