@@ -1,6 +1,7 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import React, { Reducer, useReducer } from "react";
+import React, { Reducer, useReducer, useState } from "react";
+import axios from "axios";
 
 interface State{
     email:string;
@@ -27,9 +28,19 @@ const Login:React.FC = () => {
         email:'',
         password:'',
     });
-const handleSubmit = (event:React.MouseEvent<HTMLButtonElement>)=>{
+const handleSubmit = async (event:React.MouseEvent<HTMLButtonElement>)=>{
     event.preventDefault();
+    console.log(state);
+    try{
+       const {data}=await axios.post('http://localhost:8000/auth/signUp',state);
+       console.log(data);
+       localStorage.setItem('userInfo',JSON.stringify(data))
+    }catch(error:any){
+        setError(error.response.data.message);
+    }
 }
+const [error, setError] = useState<string | boolean>(false);
+const [loading, setLoading] = useState<string | boolean>(false);
     return ( 
         <>
         <Grid container sx={{justifyContent:'center',flexDirection:'column',display:'flex'}}>
