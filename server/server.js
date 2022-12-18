@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bycrpt = require('bcryptjs');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
 
 //inintializing the app;
@@ -11,6 +12,7 @@ const app = express();
 //middlewares;
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 //importing routes;
 const {
