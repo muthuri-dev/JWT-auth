@@ -2,11 +2,12 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy":"http://localhost:8000/auth",
+  "proxy": "http://localhost:8000/auth/",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",
+    "@mui/lab": "^5.0.0-alpha.112",
     "@mui/material": "^5.11.0",
     "@mui/styled-engine-sc": "^5.11.0",
     "@testing-library/jest-dom": "^5.16.5",

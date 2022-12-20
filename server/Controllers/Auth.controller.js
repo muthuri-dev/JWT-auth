@@ -22,8 +22,11 @@ const signUp = async(req, res) => {
         const userExists = await Users.findOne({ email }); //returns boolean true if user exists;
         console.log(userExists);
         if (userExists) {
-            res.status(400)
-            throw new Error('User Already Exists!');
+            res.json({
+                status: 400,
+                message: 'User Already Exists!',
+            });
+            return;
         } else {
             const user = new Users({ name, email, password: hashedPassword, picture });
             user.save((error) => {
@@ -33,8 +36,11 @@ const signUp = async(req, res) => {
                         token: generateToken(user._id),
                     });
                 } else {
-                    res.status(400)
-                    throw new Error('Error occurred while saving the user');
+                    res.json({
+                        status: 400,
+                        message: 'Error occurred while saving user',
+                    });
+                    return;
                 }
             });
         }
@@ -50,14 +56,23 @@ const login = async(req, res) => {
         const correctPassword = await bcrypt.compare(password, user.password); //boolean true || false;
         if (correctPassword) {
             res.json({
-                message: 'Correct password',
+                status: 200,
+                message: 'successful logged in',
                 token: generateToken(user._id),
             })
         } else {
-            throw new Error('Invalid password');
+            res.json({
+                status: 400,
+                message: 'Invalid user password!'
+            });
+            return;
         }
     } else {
-        throw new Error('User does not Exists!');
+        res.json({
+            status: 400,
+            message: 'User with Email does not Exists!'
+        });
+        return;
     }
 }
 
