@@ -2,6 +2,8 @@ import { Button, Grid, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import React, { Reducer, useReducer , useState} from "react";
 import axios from "axios";
+import { LoadingButton } from "@mui/lab";
+import {Snackbar, Alert} from "@mui/material";
 
 interface State{
     name:string;
@@ -40,15 +42,21 @@ const SignUp:React.FC = () => {
     });
 const handleSubmit = async(event:React.MouseEvent<HTMLButtonElement>)=>{
     event.preventDefault();
-    console.log(state);
-    try{
-       await axios.post('http://localhost:8000/auth/signUp',state);
-    }catch(error:any){
-        setError(error.response.data.message);
-    }
+    await axios.post('http://localhost:8000/auth/signUp',state)
+        .then(response=>{
+           if(response.data.status !==200){
+            setLoading(false);
+            setError(response.data.message);
+           }else{
+            setLoading(true);
+            localStorage.setItem("userInfo",JSON.stringify(response.data.token));
+            setSuccess(response.data.message);
+           }
+        });
 }
-const [error, setError] = useState<string | boolean>(false);
-const [loading, setLoading] = useState<string | boolean>(false);
+const [error, setError] = useState< boolean | string>(false);
+const [loading, setLoading] = useState< boolean>(false);
+const [success, setSuccess] = useState <boolean | string> (false);
     return ( 
         <>
         <Grid container sx={{justifyContent:'center',flexDirection:'column',display:'flex'}}>
@@ -77,13 +85,31 @@ const [loading, setLoading] = useState<string | boolean>(false);
                     onChange={(event)=>dispatch({type:'USER_PASSWORD',payload:event.target.value})}
                     sx={{marginTop:3,width:'50%'}}
                     />
-                    <Button color='success' 
+                   {loading ?
+                    <LoadingButton
+                    variant="contained" loading
+                    loadingPosition="start" 
+                    sx={{fontFamily:'monospace',marginTop:2,width:'150px'}}
+                    >Submitting</LoadingButton>
+                    :
+                    <Button color='primary' 
                     variant="contained" 
                     onClick={handleSubmit}
                     sx={{fontFamily:'monospace',marginTop:2}}>SUBMIT</Button>
+                    }
                     <Typography>Aready have an account? <Link to='/login'>Login</Link></Typography>
             </Grid>
         </Grid>
+        {error ? <Snackbar open={true } autoHideDuration={3000}>
+                    <Alert severity="error">
+                   {error}
+                    </Alert>
+        </Snackbar> :null}
+        {success ? <Snackbar open={true } autoHideDuration={3000}>
+                    <Alert severity="success">
+                   {success}
+                    </Alert>
+        </Snackbar>: null}
         </>
      );
 }

@@ -1,9 +1,9 @@
 import { Alert, Button, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import React, { Reducer, useReducer, useState } from "react";
+import React, { Reducer, useReducer, useState, useEffect } from "react";
 import axios from "axios";
 import { LoadingButton } from "@mui/lab";
-import ErrorMessage from '../../Components/ErrorMessage';
+import { useNavigate } from "react-router-dom";
 
 interface State{
     email:string;
@@ -39,11 +39,21 @@ const handleSubmit = async (event:React.MouseEvent<HTMLButtonElement>)=>{
             setError(response.data.message);
            }else{
             setLoading(true);
+            localStorage.setItem("userInfo",JSON.stringify(response.data.token));
            }
         });
 }
 const [error, setError] = useState<string | boolean>(false);
 const [loading, setLoading] = useState< boolean>(false);
+
+const navigate = useNavigate();
+
+useEffect(()=>{
+    const userInfo = localStorage.getItem("userInfo");
+    if(userInfo){
+        navigate('/');
+    }
+},[navigate]);
     return ( 
         <>
         <Grid container sx={{justifyContent:'center',flexDirection:'column',display:'flex'}}>

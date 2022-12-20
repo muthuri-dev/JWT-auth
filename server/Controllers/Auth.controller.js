@@ -20,7 +20,6 @@ const signUp = async(req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const userExists = await Users.findOne({ email }); //returns boolean true if user exists;
-        console.log(userExists);
         if (userExists) {
             res.json({
                 status: 400,
@@ -31,9 +30,11 @@ const signUp = async(req, res) => {
             const user = new Users({ name, email, password: hashedPassword, picture });
             user.save((error) => {
                 if (!error) {
-                    res.status(200).json({
+                    res.json({
+                        status: 200,
                         user,
                         token: generateToken(user._id),
+                        message: 'Successful registered',
                     });
                 } else {
                     res.json({
@@ -59,7 +60,7 @@ const login = async(req, res) => {
                 status: 200,
                 message: 'successful logged in',
                 token: generateToken(user._id),
-            })
+            });
         } else {
             res.json({
                 status: 400,
