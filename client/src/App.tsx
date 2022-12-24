@@ -9,7 +9,6 @@ import Login from "./Views/Log/login";
 import SignUp from "./Views/Log/signUp";
 import HomePage from "./Views/Home/Home";
 
-
 function App() {
   return (
     <div className="App">
